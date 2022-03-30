@@ -1,17 +1,14 @@
 <template>
-  <InputApp></InputApp>
-  <TodoList></TodoList>
+  <BoardTodo></BoardTodo>
 </template>
 
 <script>
-import InputApp from "./components/InputApp.vue";
-import TodoList from "./components/TodoList.vue";
+import BoardTodo from "./components/boardTodo.vue";
 
 export default {
   name: "App",
   components: {
-    InputApp,
-    TodoList,
+    BoardTodo,
   },
 };
 </script>
