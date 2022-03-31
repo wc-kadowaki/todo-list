@@ -1,9 +1,9 @@
 <template>
-  <BoardTodo></BoardTodo>
+  <BoardTodo />
 </template>
 
 <script>
-import BoardTodo from "./components/boardTodo.vue";
+import BoardTodo from "./components/BoardTodo.vue";
 
 export default {
   name: "App",

@@ -6,7 +6,7 @@
       <h3 class="board-todo__subtitle"></h3>
       <!-- タスクの内容 タイトル、期日、詳細・・・最初はタイトルのみでのちに追加 -->
       <div class="add-todo__editor">
-        <EditTodo fn="add" title="" @emit-event="emitEvent"></EditTodo>
+        <EditTodo fn="add" title="" @emit-event="emitEvent" />
       </div>
     </div>
     <!-- todoのリスト -->
@@ -18,11 +18,7 @@
         <div v-if="!todo.done">
           <!-- 編集するときの要素 -->
           <div v-if="todo.editFlag">
-            <EditTodo
-              fn="edit"
-              :title="todo.title"
-              @emit-event="emitEvent"
-            ></EditTodo>
+            <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" />
           </div>
           <!-- 基本表示の要素 -->
           <div v-else>
@@ -42,11 +38,7 @@
         <div v-if="todo.done">
           <!-- 編集するときの要素 -->
           <div v-if="todo.editFlag">
-            <EditTodo
-              fn="edit"
-              :title="todo.title"
-              @emit-event="emitEvent"
-            ></EditTodo>
+            <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" />
           </div>
           <!-- 基本表示の要素 -->
           <div v-else>
@@ -67,7 +59,7 @@
 import EditTodo from "./function/EditTodo.vue";
 
 export default {
-  name: "boardTodo",
+  name: "BoardTodo",
   components: {
     EditTodo,
   },
