@@ -6,11 +6,13 @@
       <div>{{ todo.title }}</div>
     </div>
     <input type="text" v-model="todo.newTitle" />
-    <button type="button" @click="sendTodo()">
-      <span v-if="todo.editor === 'add'">追加</span>
-      <span v-if="todo.editor === 'edit'">更新</span>
-    </button>
-    <button type="button" @click="reset()">キャンセル</button>
+    <div v-if="todo.editor === 'add'">
+      <button type="button" @click="sendTodo('add')">追加</button>
+    </div>
+    <div v-if="todo.editor === 'edit'">
+      <button type="button" @click="sendTodo('update')">更新</button>
+    </div>
+    <button type="button" @click="sendTodo('cancel')">キャンセル</button>
   </div>
 </template>
 
@@ -38,15 +40,15 @@ export default {
     },
   },
   methods: {
-    reset() {
-      // 入力をキャンセルしてタイトルを更新しない
-      // キャンセルされたことを親に伝える
-    },
-    sendTodo() {
+    sendTodo(fn) {
       // 入力したToDoを親に渡す
-      // 編集が完了したことを親に伝える
-      this.$emit("emitTitle", this.todo.newTitle);
-      this.$emit("emitEvent", "complete");
+      // 編集が完了したことを親に伝える＆追加or更新orキャンセル
+      if (this.todo.newTitle === "" && fn !== "cancel") {
+        alert("入力してください");
+      } else {
+        this.$emit("emitEvent", fn, this.todo.newTitle);
+        this.todo.newTitle = "";
+      }
     },
   },
 };
