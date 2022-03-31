@@ -19,8 +19,8 @@
           <!-- 編集するときの要素 -->
           <div v-if="todo.editFlag">
             <EditTodo
-              @emit-title="emitTitle($emitTitle)"
-              @emit-event="emitEvent($emitEvent)"
+              @emit-title="emitTitle"
+              @emit-event="emitEvent"
               fn="edit"
               :title="todo.title"
             ></EditTodo>
