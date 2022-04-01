@@ -22,14 +22,11 @@
           </div>
           <!-- 基本表示の要素 -->
           <div v-else>
-            <div>{{ todo.title }}</div>
-            <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
-            <button type="button" @click="openEditor(todo)">編集</button>
-            <button type="button" @click="doneTodo(todo, true)">完了</button>
-            <button type="button" @click="removeTodo(todo)">削除</button>
+            <DisplayTodo :title="todo.title" :done="todo.done" :id="todo.id" />
           </div>
         </div>
       </div>
+      <div v-for="(todo, key) in todoList" :key="key"></div>
     </div>
     <!-- 完了したtodoのリスト -->
     <div class="board-todo__list board-todo__list--finish">
@@ -42,12 +39,7 @@
           </div>
           <!-- 基本表示の要素 -->
           <div v-else>
-            <div>{{ todo.title }}</div>
-            <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
-            <button type="button" @click="openEditor(todo)">編集</button>
-            <!-- 未完了でリストに追加 -->
-            <button type="button" @click="doneTodo(todo, false)">未完了</button>
-            <button type="button" @click="removeTodo(todo)">削除</button>
+            <DisplayTodo :title="todo.title" :done="todo.done" :id="todo.id" />
           </div>
         </div>
       </div>
@@ -57,11 +49,13 @@
 
 <script>
 import EditTodo from "./function/EditTodo.vue";
+import DisplayTodo from "./DisplayTodo.vue";
 
 export default {
   name: "BoardTodo",
   components: {
     EditTodo,
+    DisplayTodo,
   },
   data() {
     return {
@@ -76,24 +70,12 @@ export default {
       //     todoArray.push(todoList[i]);
       //   }
       // }
-      todoList: [
-        {
-          title: "vue",
-          done: false,
-          editFlag: false,
-        },
-        {
-          title: "vuex",
-          done: false,
-          editFlag: false,
-        },
-        {
-          title: "javascript",
-          done: true,
-          editFlag: false,
-        },
-      ],
     };
+  },
+  computed: {
+    todoList() {
+      return this.$store.state.todoList;
+    },
   },
   methods: {
     openEditor(todo) {
@@ -106,14 +88,6 @@ export default {
       });
       // 編集するtodoのエディターを表示
       this.todoList[index].editFlag = true;
-    },
-    doneTodo(todo, bool) {
-      let index = this.todoList.indexOf(todo);
-      if (bool) {
-        this.todoList[index].done = true;
-      } else {
-        this.todoList[index].done = false;
-      }
     },
     removeTodo(todo) {
       let index = this.todoList.indexOf(todo);
