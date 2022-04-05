@@ -1,22 +1,29 @@
 <template>
-  <!-- 編集するときの要素 -->
-  <div v-if="todo.editFlag">
-    <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" />
+  <div class="todo">
+    <!-- 編集するときの要素 -->
+    <div v-if="todo.editFlag">
+      <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" />
+    </div>
+    <!-- 基本表示の要素 -->
+    <div class="todo__default" v-else>
+      <div class="todo__title">{{ todo.title }}</div>
+      <div class="todo__buttons">
+        <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
+        <button class="todo__button" type="button" @click="openEditor(todo.id)">
+          編集
+        </button>
+        <!-- 完了、未完了でテキストを出し換えている -->
+        <button class="todo__button" type="button" @click="doneChange(todo.id)">
+          <span v-if="todo.done"> 未完了 </span>
+          <span v-else> 完了 </span>
+        </button>
+        <!-- タスクの削除 -->
+        <button class="todo__button" type="button" @click="removeTodo(todo.id)">
+          削除
+        </button>
+      </div>
+    </div>
   </div>
-  <!-- 基本表示の要素 -->
-  <div v-else>
-    <div>{{ todo.title }}</div>
-    <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
-    <button type="button" @click="openEditor(todo)">編集</button>
-    <span v-if="todo.done">
-      <button type="button" @click="doneChange(todo.id)">未完了</button>
-    </span>
-    <span v-else>
-      <button type="button" @click="doneChange(todo.id)">完了</button>
-    </span>
-    <button type="button" @click="removeTodo(todo)">削除</button>
-  </div>
-  <button type="button" @click="increment()"></button>
 </template>
 
 <script>
@@ -27,17 +34,11 @@ export default {
   components: {
     EditTodo,
   },
-  data() {
-    return {
-      // todo: {
-      //   title: this.$props.title,
-      //   done: this.$props.done,
-      //   id: this.$props.id,
-      // },
-    };
-  },
   computed: {
     todo() {
+      // title・・・タスクのタイトルの表示
+      // done・・・タスクの完了、未完了のだし分け
+      // id・・・完了や編集などをする際のタスクの特定の為のID
       return {
         title: this.$props.title,
         done: this.$props.done,
@@ -63,6 +64,44 @@ export default {
     doneChange(id) {
       this.$store.commit("doneChange", id);
     },
+    openEditor(id) {
+      this.$store.commit("openEditor", id);
+    },
+    removeTodo(id) {
+      this.$store.commit("removeTodo", id);
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.todo {
+  padding: 10px 20px;
+  width: 500px;
+  border: 1px solid #000000;
+
+  &__title {
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #000000;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+
+  &__button {
+    background-color: transparent;
+    border: 1px solid #000000;
+    cursor: pointer;
+    outline: none;
+    padding: 5px 10px;
+    appearance: none;
+    font-size: 14px;
+    border-radius: 50px;
+    width: 100px;
+  }
+}
+</style>
