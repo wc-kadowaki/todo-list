@@ -7,30 +7,27 @@
     <!-- 基本表示の要素 -->
     <div class="todo__default" v-else>
       <div class="todo__title">{{ todo.title }}</div>
+      <div v-if="todo.details" class="todo__details">{{ todo.details }}</div>
       <div class="todo__buttons">
         <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
-        <button class="todo__button" type="button" @click="openEditor(todo.id)">
-          編集
-        </button>
+        <button class="todo__button" type="button" @click="openEditor(todo.id)">編集</button>
         <!-- 完了、未完了でテキストを出し換えている -->
         <button class="todo__button" type="button" @click="doneChange(todo.id)">
           <span v-if="todo.done"> 未完了 </span>
           <span v-else> 完了 </span>
         </button>
         <!-- タスクの削除 -->
-        <button class="todo__button" type="button" @click="removeTodo(todo.id)">
-          削除
-        </button>
+        <button class="todo__button" type="button" @click="removeTodo(todo.id)">削除</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import EditTodo from "./function/EditTodo.vue";
+import EditTodo from './function/EditTodo.vue';
 
 export default {
-  name: "DisplayTodo",
+  name: 'DisplayTodo',
   components: {
     EditTodo,
   },
@@ -41,6 +38,7 @@ export default {
       // id・・・完了や編集などをする際のタスクの特定の為のID
       return {
         title: this.$props.title,
+        details: this.$props.details,
         done: this.$props.done,
         id: this.$props.id,
       };
@@ -50,6 +48,10 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    details: {
+      type: String,
+      required: false,
     },
     done: {
       type: Boolean,
@@ -62,13 +64,13 @@ export default {
   },
   methods: {
     doneChange(id) {
-      this.$store.commit("doneChange", id);
+      this.$store.commit('doneChange', id);
     },
     openEditor(id) {
-      this.$store.commit("openEditor", id);
+      this.$store.commit('openEditor', id);
     },
     removeTodo(id) {
-      this.$store.commit("removeTodo", id);
+      this.$store.commit('removeTodo', id);
     },
   },
 };
@@ -84,6 +86,12 @@ export default {
     font-size: 18px;
     font-weight: bold;
     border-bottom: 1px solid #000000;
+    overflow-wrap: break-word;
+  }
+
+  &__details {
+    overflow-wrap: break-word;
+    white-space: pre;
   }
 
   &__buttons {

@@ -20,21 +20,11 @@
         <div v-if="!todo.done">
           <!-- 編集するときの要素 -->
           <!-- 編集するときは編集前のタイトルを表示するためpropsとしてcomponentsに渡している -->
-          <EditTodo
-            v-if="todo.editFlag"
-            fn="edit"
-            :title="todo.title"
-            @emit-event="emitEvent"
-          />
+          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" @emit-event="emitEvent" />
           <!-- 基本表示の要素 -->
           <!-- for分をこのコンポーネントで行っているためDisplayTodo空ではなくこのコンポーネントからpropsで受け渡すようにしている-->
           <!-- title・・・タスクのタイトル、done・・・タスクが完了しているかどうか、id・・・完了や編集などをする際のタスクの特定の為のID -->
-          <DisplayTodo
-            v-else
-            :title="todo.title"
-            :done="todo.done"
-            :id="todo.id"
-          />
+          <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :id="todo.id" />
         </div>
       </div>
     </div>
@@ -46,19 +36,9 @@
         <!-- todoが完了(done)しているものを表示 -->
         <div v-if="todo.done">
           <!-- 編集するときの要素 -->
-          <EditTodo
-            v-if="todo.editFlag"
-            fn="edit"
-            :title="todo.title"
-            @emit-event="emitEvent"
-          />
+          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" @emit-event="emitEvent" />
           <!-- 基本表示の要素 propsに関しては完了していないものと同じ -->
-          <DisplayTodo
-            v-else
-            :title="todo.title"
-            :done="todo.done"
-            :id="todo.id"
-          />
+          <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :id="todo.id" />
         </div>
       </div>
     </div>
@@ -66,11 +46,11 @@
 </template>
 
 <script>
-import EditTodo from "./function/EditTodo.vue";
-import DisplayTodo from "./DisplayTodo.vue";
+import EditTodo from './function/EditTodo.vue';
+import DisplayTodo from './DisplayTodo.vue';
 
 export default {
-  name: "BoardTodo",
+  name: 'BoardTodo',
   components: {
     EditTodo,
     DisplayTodo,
@@ -117,22 +97,24 @@ export default {
     emitEvent(...args) {
       // EditTodoから値の受け取り
       // todoの追加・更新・削除
-      const [event, title] = args;
+      const [event, title, details] = args;
       switch (event) {
-        case "add":
+        case 'add':
           this.todoList.push({
             title: title,
+            details: details,
             done: false,
             editFlag: false,
             id: this.lastId,
           });
           // 編集が完了した際にstore.jsのstateのIDを更新したい、、、
-          this.$store.commit("updateLastId");
+          this.$store.commit('updateLastId');
           break;
-        case "update":
+        case 'update':
           for (let i = 0; i < this.todoList.length; i++) {
             if (this.todoList[i].editFlag) {
               this.todoList[i].title = title;
+              this.todoList[i].details = details;
             }
           }
           break;

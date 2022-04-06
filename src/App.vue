@@ -3,10 +3,12 @@
 </template>
 
 <script>
-import BoardTodo from "./components/BoardTodo.vue";
+import 'normalize.css';
+import './assets/base.css';
+import BoardTodo from './components/BoardTodo.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     BoardTodo,
   },
