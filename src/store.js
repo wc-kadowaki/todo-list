@@ -3,18 +3,21 @@ import { createStore } from "vuex";
 const defaultData = [
   {
     title: "vue",
+    details: "vueタスクの詳細",
     done: false,
     editFlag: false,
     id: 1,
   },
   {
     title: "vuex",
+    details: "vuexタスクの詳細",
     done: false,
     editFlag: false,
     id: 2,
   },
   {
     title: "javaScript",
+    details: "javaScriptタスクの詳細",
     done: true,
     editFlag: false,
     id: 3,
