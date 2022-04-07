@@ -8,6 +8,18 @@
     <div class="todo__default" v-else>
       <div class="todo__title">{{ todo.title }}</div>
       <div v-if="todo.details" class="todo__details">{{ todo.details }}</div>
+      <div v-if="todo.date" class="todo__date">
+        <div>期日：{{ todo.date }}</div>
+      </div>
+      <div v-if="todo.done" class="todo__done-date">
+        <dir>完了した日付：{{ todo.doneDate }}</dir>
+      </div>
+      <div v-if="todo.time" class="todo__time">
+        <dir>時間：{{ todo.time }}</dir>
+      </div>
+      <div v-if="todo.done" class="todo__done-time">
+        <dir>完了した時間：{{ todo.doneTime }}</dir>
+      </div>
       <div class="todo__buttons">
         <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
         <button class="todo__button" type="button" @click="openEditor(todo.id)">編集</button>
@@ -39,28 +51,24 @@ export default {
       return {
         title: this.$props.title,
         details: this.$props.details,
+        date: this.$props.date,
+        time: this.$props.time,
         done: this.$props.done,
+        doneDate: this.$props.doneDate,
+        doneTime: this.$props.doneTime,
         id: this.$props.id,
       };
     },
   },
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    details: {
-      type: String,
-      required: false,
-    },
-    done: {
-      type: Boolean,
-      required: true,
-    },
-    id: {
-      type: Number,
-      required: true,
-    },
+    title: { type: String, required: true },
+    details: { type: String, required: false },
+    date: { type: Date, required: false },
+    time: { type: Date, required: false },
+    done: { type: Boolean, required: true },
+    doneDate: { type: Date, required: false },
+    doneTime: { type: Date, required: false },
+    id: { type: Number, required: true },
   },
   methods: {
     doneChange(id) {

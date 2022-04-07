@@ -4,10 +4,12 @@
     <!-- todoの追加 -->
     <div class="board-todo__add add-todo">
       <h3 class="board-todo__subtitle">ToDoの追加</h3>
+      <button @click="addNewTodo('open')" v-if="!newTodo">ToDoを追加する</button>
       <!-- タスクの内容 タイトル、期日、詳細・・・最初はタイトルのみでのちに追加 -->
-      <div class="add-todo__editor">
+      <div v-if="newTodo" class="add-todo__editor">
         <!-- 新規タスク追加のエディターstore.jsの一番新しいidを与えてそれを新規追加した際のidにする？？？ -->
-        <EditTodo fn="add" title="" @emit-event="emitEvent" :id="lastId" />
+        <EditTodo fn="add" @emit-event="emitEvent" :id="lastId" />
+        <button @click="addNewTodo('close')">閉じる</button>
       </div>
     </div>
     <!-- todoのリスト -->
@@ -20,11 +22,11 @@
         <div v-if="!todo.done">
           <!-- 編集するときの要素 -->
           <!-- 編集するときは編集前のタイトルを表示するためpropsとしてcomponentsに渡している -->
-          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" @emit-event="emitEvent" />
+          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" @emit-event="emitEvent" />
           <!-- 基本表示の要素 -->
           <!-- for分をこのコンポーネントで行っているためDisplayTodo空ではなくこのコンポーネントからpropsで受け渡すようにしている-->
           <!-- title・・・タスクのタイトル、done・・・タスクが完了しているかどうか、id・・・完了や編集などをする際のタスクの特定の為のID -->
-          <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :id="todo.id" />
+          <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :time="todo.time" :date="todo.date" :id="todo.id" />
         </div>
       </div>
     </div>
@@ -36,9 +38,9 @@
         <!-- todoが完了(done)しているものを表示 -->
         <div v-if="todo.done">
           <!-- 編集するときの要素 -->
-          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" @emit-event="emitEvent" />
+          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" @emit-event="emitEvent" />
           <!-- 基本表示の要素 propsに関しては完了していないものと同じ -->
-          <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :id="todo.id" />
+          <DisplayTodo v-else :title="todo.title" :details="todo.details" :date="todo.date" :time="todo.time" :done="todo.done" :doneDate="todo.doneDate" :doneTime="todo.doneTime" :id="todo.id" />
         </div>
       </div>
     </div>
@@ -68,6 +70,7 @@ export default {
       //     todoArray.push(todoList[i]);
       //   }
       // }
+      newTodo: false,
     };
   },
   computed: {
@@ -97,12 +100,14 @@ export default {
     emitEvent(...args) {
       // EditTodoから値の受け取り
       // todoの追加・更新・削除
-      const [event, title, details] = args;
+      const [event, title, details, date, time] = args;
       switch (event) {
         case 'add':
           this.todoList.push({
             title: title,
             details: details,
+            date: date,
+            time: time,
             done: false,
             editFlag: false,
             id: this.lastId,
@@ -115,6 +120,8 @@ export default {
             if (this.todoList[i].editFlag) {
               this.todoList[i].title = title;
               this.todoList[i].details = details;
+              this.todoList[i].date = date;
+              this.todoList[i].time = time;
             }
           }
           break;
@@ -122,6 +129,13 @@ export default {
       this.todoList.forEach((element) => {
         element.editFlag = false;
       });
+    },
+    addNewTodo(fn) {
+      if (fn === 'open') {
+        this.newTodo = true;
+      } else {
+        this.newTodo = false;
+      }
     },
 
     // ローカルストレージへのデータの登録と呼び出し
