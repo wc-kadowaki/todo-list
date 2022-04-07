@@ -1,50 +1,29 @@
 import { createStore } from 'vuex';
 
-const defaultData = [
-  {
-    title: 'vue',
-    details: 'vueタスクの詳細',
-    date: '2022-04-07',
-    time: '18:00',
-    done: false,
-    doneDate: '',
-    doneTime: '',
-    editFlag: false,
-    id: 1,
-  },
-  {
-    title: 'vuex',
-    details: 'vuexタスクの詳細',
-    date: '2022-04-08',
-    time: '18:00',
-    done: false,
-    doneDate: '',
-    doneTime: '',
-    editFlag: false,
-    id: 2,
-  },
-  {
-    title: 'javaScript',
-    details: 'javaScriptタスクの詳細',
-    date: '2022-04-09',
-    time: '18:00',
-    done: true,
-    doneDate: '2022-01-01',
-    doneTime: '18:00',
-    editFlag: false,
-    id: 3,
-  },
-];
+const localStorageKey = 'todoList';
+// ローカルストレージのデータを取得
+let data = localStorage.getItem(localStorageKey); // ローカルストレージからkeyがtodoListのデータを取得
+let initId = 0; // データがない場合のタスクIDの初期値
+if (data) {
+  // ローカルストレージにデータが存在している時の処理
+  data = JSON.parse(data); // 文字列になっているデータをパースする
+  initId = data[data.length - 1].id + 1; // データの配列の最後のIDに+1した数値を代入
+} else {
+  // ローカルストレージにデータがない場合
+  data = []; // オブジェクトを配列にしてtodoリストを管理しているため空の配列を代入
+}
 
 export default createStore({
   state() {
     return {
-      todoList: defaultData,
-      lastId: defaultData[defaultData.length - 1].id + 1,
+      todoList: data,
+      lastId: initId,
     };
   },
   mutations: {
     doneChange(state, id) {
+      // todoの完了、未完了の切り替え
+      // 日時の入力で一桁の時先頭に「0」を付ける関数
       function dateFormat(number) {
         let target = String(number);
         if (target.length === 1) {
@@ -53,21 +32,23 @@ export default createStore({
           return target;
         }
       }
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = dateFormat(today.getMonth() + 1);
-      const day = dateFormat(today.getDate());
-      const hours = dateFormat(today.getHours());
-      const minutes = dateFormat(today.getMinutes());
-      const doneDate = `${year}-${month}-${day}`;
-      const doneTime = `${hours}:${minutes}`;
+      const today = new Date(); // 完了を押したときのDateオブジェクト
+      const year = today.getFullYear(); // 年の取得
+      const month = dateFormat(today.getMonth() + 1); // 月の取得
+      const day = dateFormat(today.getDate()); // 日付の取得
+      const hours = dateFormat(today.getHours()); // 時間の取得
+      const minutes = dateFormat(today.getMinutes()); // 分の取得
+      const doneDate = `${year}-${month}-${day}`; // 日付のフォーマットをYYYY-MM-DDにする
+      const doneTime = `${hours}:${minutes}`; // 時間のフォーマットをHH:MM
       for (let i = 0; i < state.todoList.length; i++) {
         if (state.todoList[i].id === id) {
           if (state.todoList[i].done) {
+            // 未完了に変更するときの処理
             state.todoList[i].done = false;
             state.todoList[i].doneDate = '';
             state.todoList[i].doneTime = '';
           } else {
+            // 完了に変更する時の処理
             state.todoList[i].done = true;
             state.todoList[i].doneDate = doneDate;
             state.todoList[i].doneTime = doneTime;
@@ -96,6 +77,12 @@ export default createStore({
     updateLastId(state) {
       // 最後に追加したtodoのidに+1することでかぶらない数値のidを作成
       state.lastId = state.todoList[state.todoList.length - 1].id + 1;
+    },
+    pushLocalStorage(state) {
+      // ローカルストレージのデータを更新する関数
+      localStorage.removeItem(localStorageKey); // 既存のデータを削除
+      let json = JSON.stringify(state.todoList, undefined, 1); // 現在のtodoリスト(オブジェクトの配列)をローカルストレージのvalueに入れる為文字列型に変換
+      localStorage.setItem(localStorageKey, json); //
     },
   },
 });

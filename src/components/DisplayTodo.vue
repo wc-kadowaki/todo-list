@@ -73,12 +73,14 @@ export default {
   methods: {
     doneChange(id) {
       this.$store.commit('doneChange', id);
+      this.$store.commit('pushLocalStorage');
     },
     openEditor(id) {
       this.$store.commit('openEditor', id);
     },
     removeTodo(id) {
       this.$store.commit('removeTodo', id);
+      this.$store.commit('pushLocalStorage');
     },
   },
 };
