@@ -38,7 +38,10 @@
         <button class="editor__button" type="button" @click="sendTodo('update')">更新</button>
       </div>
       <!-- タスクの追加、編集関係なくキャンセル時のボタン -->
-      <button class="editor__button" type="button" @click="sendTodo('cancel')">キャンセル</button>
+      <button class="editor__button" type="button" @click="sendTodo('cancel')">
+        <span v-if="todo.editor === 'edit'">キャンセル</span>
+        <span v-if="todo.editor === 'add'">クリア</span>
+      </button>
     </div>
   </div>
 </template>
@@ -130,6 +133,7 @@ export default {
         this.todo.newDate = '';
         this.todo.newTime = '';
       }
+      this.$store.commit('pushLocalStorage');
     },
   },
 };
