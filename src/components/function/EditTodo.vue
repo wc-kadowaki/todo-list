@@ -19,6 +19,14 @@
       <div class="editor__item">詳細</div>
       <textarea class="editor__textarea" v-model="todo.newDetails"></textarea>
     </div>
+    <div class="editor__edit">
+      <div class="editor__item">日付</div>
+      <input type="date" v-model="todo.newDate" />
+    </div>
+    <div class="editor__edit">
+      <div class="editor__item">時間</div>
+      <input type="time" v-model="todo.newTime" />
+    </div>
     <!-- 諸々のボタン -->
     <div class="editor__buttons">
       <!-- タスクの追加時のボタン -->
@@ -49,6 +57,10 @@ export default {
         newTitle: '',
         details: this.$props.details,
         newDetails: '',
+        date: this.$props.date,
+        newDate: '',
+        time: this.$props.time,
+        newTime: '',
         editor: this.$props.fn,
       },
     };
@@ -64,6 +76,14 @@ export default {
       type: String,
       required: false,
     },
+    date: {
+      type: Date,
+      required: false,
+    },
+    time: {
+      type: Date,
+      required: false,
+    },
     fn: {
       type: String,
       required: true,
@@ -73,12 +93,15 @@ export default {
   methods: {
     sendTodo(fn) {
       // 編集が完了したことを親に伝える＆追加or更新orキャンセル
-      if (this.todo.newTitle === '' && this.todo.newDetails === '' && fn !== 'cancel') {
+      if (this.todo.newTitle === '' && this.todo.newDetails === '' && this.todo.newDate === '' && this.todo.newTime === '' && fn !== 'cancel') {
+        // タイトル、詳細、日付、時間のどれも入力されずに追加、更新のボタンを押したとき
         alert('入力してください');
       } else if (this.todo.newTitle === '' && fn === 'add') {
+        // todoの新規追加の時にタイトルを入力していないとき
         alert('タイトルを入力してください');
       } else {
-        let title, details;
+        let title, details, date, time;
+        // 入力されたものに更新するか既存のものを引き継ぐのか判定
         if (this.todo.newTitle === '') {
           title = this.todo.title;
         } else {
@@ -89,9 +112,23 @@ export default {
         } else {
           details = this.todo.newDetails;
         }
-        this.$emit('emitEvent', fn, title, details);
+        if (this.todo.newDate === '') {
+          date = this.todo.date;
+        } else {
+          date = this.todo.newDate;
+        }
+        if (this.todo.newTime === '') {
+          time = this.todo.time;
+        } else {
+          time = this.todo.newTime;
+        }
+        // どのボタンを押したのかとtodoの各項目を送る
+        this.$emit('emitEvent', fn, title, details, date, time);
+        // 入力が完了したので各項目の入力欄を空にする
         this.todo.newTitle = '';
         this.todo.newDetails = '';
+        this.todo.newDate = '';
+        this.todo.newTime = '';
       }
     },
   },
@@ -120,6 +157,7 @@ export default {
     border: 1px solid #000000;
     padding: 5px 10px;
     margin-top: 10px;
+    white-space: pre;
   }
 
   &__input {
