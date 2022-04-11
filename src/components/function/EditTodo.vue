@@ -27,6 +27,14 @@
       <div class="editor__item">時間</div>
       <input type="time" v-model="todo.newTime" />
     </div>
+    <div class="editor__edit">
+      <div class="editor__user">担当者</div>
+      <select v-model="todo.newUser">
+        <option value="">選択しない</option>
+        <option v-for="(user, key) in userList" :key="key" :selected="selectValue ? true : user.name">{{ user.name }}</option>
+        <option value="abc">テスト</option>
+      </select>
+    </div>
     <!-- 諸々のボタン -->
     <div class="editor__buttons">
       <!-- タスクの追加時のボタン -->
@@ -64,9 +72,16 @@ export default {
         newDate: '',
         time: this.$props.time,
         newTime: '',
+        user: this.$props.user,
+        newUser: this.$props.user,
         editor: this.$props.fn,
       },
     };
+  },
+  computed: {
+    userList() {
+      return this.$store.state.userList;
+    },
   },
   // title・・・ 元のタイトルを利用するため
   // fn・・・追加、編集の判定をするため
@@ -87,6 +102,10 @@ export default {
       type: Date,
       required: false,
     },
+    user: {
+      type: String,
+      required: false,
+    },
     fn: {
       type: String,
       required: true,
@@ -96,14 +115,14 @@ export default {
   methods: {
     sendTodo(fn) {
       // 編集が完了したことを親に伝える＆追加or更新orキャンセル
-      if (this.todo.newTitle === '' && this.todo.newDetails === '' && this.todo.newDate === '' && this.todo.newTime === '' && fn !== 'cancel') {
+      if (this.todo.newTitle === '' && this.todo.newDetails === '' && this.todo.newDate === '' && this.todo.newTime === '' && this.todo.user === '' && fn !== 'cancel') {
         // タイトル、詳細、日付、時間のどれも入力されずに追加、更新のボタンを押したとき
         alert('入力してください');
       } else if (this.todo.newTitle === '' && fn === 'add') {
         // todoの新規追加の時にタイトルを入力していないとき
         alert('タイトルを入力してください');
       } else {
-        let title, details, date, time;
+        let title, details, date, time, user;
         // 入力されたものに更新するか既存のものを引き継ぐのか判定
         if (this.todo.newTitle === '') {
           title = this.todo.title;
@@ -125,13 +144,19 @@ export default {
         } else {
           time = this.todo.newTime;
         }
+        if (this.todo.user === this.todo.newUser) {
+          user = this.todo.user;
+        } else {
+          user = this.todo.newUser;
+        }
         // どのボタンを押したのかとtodoの各項目を送る
-        this.$emit('emitEvent', fn, title, details, date, time);
+        this.$emit('emitEvent', fn, title, details, date, time, user);
         // 入力が完了したので各項目の入力欄を空にする
         this.todo.newTitle = '';
         this.todo.newDetails = '';
         this.todo.newDate = '';
         this.todo.newTime = '';
+        this.todo.newUser = '';
       }
       this.$store.commit('pushLocalStorage');
     },
@@ -172,6 +197,8 @@ export default {
   &__textarea {
     margin-top: 10px;
     width: 100%;
+    resize: vertical;
+    padding: 10px;
   }
 
   &__buttons {

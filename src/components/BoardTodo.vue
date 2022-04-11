@@ -12,38 +12,103 @@
         <button @click="addNewTodo('close')">閉じる</button>
       </div>
     </div>
+    <div class="board-todo__user-container">
+      <div class="board-todo__container">
+        <div>すべてのToDo</div>
+        <div class="board-todo__list">
+          <div class="board-todo__category">未完了のToDo</div>
+          <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
+          <!-- store.jsのtodoListをfor分で回して表示する -->
+          <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
+            <!-- todoが完了(done)していないものを表示 -->
+            <div v-if="!todo.done">
+              <!-- 編集するときの要素 -->
+              <!-- 編集するときは編集前のタイトルを表示するためpropsとしてcomponentsに渡している -->
+              <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" :user="todo.user" @emit-event="emitEvent" />
+              <!-- 基本表示の要素 -->
+              <!-- for分をこのコンポーネントで行っているためDisplayTodo空ではなくこのコンポーネントからpropsで受け渡すようにしている-->
+              <!-- title・・・タスクのタイトル、done・・・タスクが完了しているかどうか、id・・・完了や編集などをする際のタスクの特定の為のID -->
+              <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :time="todo.time" :date="todo.date" :id="todo.id" :user="todo.user" />
+            </div>
+          </div>
+        </div>
+        <!-- 完了したtodoのリスト -->
+        <div class="board-todo__list board-todo__list--finish">
+          <div class="board-todo__category">完了したToDo</div>
+          <!-- store.jsのtodoListをfor分で回して表示する -->
+          <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
+            <!-- todoが完了(done)しているものを表示 -->
+            <div v-if="todo.done">
+              <!-- 編集するときの要素 -->
+              <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" @emit-event="emitEvent" :user="todo.user" />
+              <!-- 基本表示の要素 propsに関しては完了していないものと同じ -->
+              <DisplayTodo
+                v-else
+                :title="todo.title"
+                :details="todo.details"
+                :date="todo.date"
+                :time="todo.time"
+                :done="todo.done"
+                :doneDate="todo.doneDate"
+                :doneTime="todo.doneTime"
+                :id="todo.id"
+                :user="todo.user"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="board-todo__container" v-for="(user, userKey) in userList" :key="userKey">
+        <div>{{ user.name }}のToDoリスト</div>
+        <div class="board-todo__list">
+          <div class="board-todo__category">未完了のToDo</div>
+          <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
+          <!-- store.jsのtodoListをfor分で回して表示する -->
+          <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
+            <div v-if="user.name === todo.user">
+              <!-- todoが完了(done)していないものを表示 -->
+              <div v-if="!todo.done">
+                <!-- 編集するときの要素 -->
+                <!-- 編集するときは編集前のタイトルを表示するためpropsとしてcomponentsに渡している -->
+                <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" :user="todo.user" @emit-event="emitEvent" />
+                <!-- 基本表示の要素 -->
+                <!-- for分をこのコンポーネントで行っているためDisplayTodo空ではなくこのコンポーネントからpropsで受け渡すようにしている-->
+                <!-- title・・・タスクのタイトル、done・・・タスクが完了しているかどうか、id・・・完了や編集などをする際のタスクの特定の為のID -->
+                <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :time="todo.time" :date="todo.date" :id="todo.id" :user="todo.user" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 完了したtodoのリスト -->
+        <div class="board-todo__list board-todo__list--finish">
+          <div class="board-todo__category">完了したToDo</div>
+          <!-- store.jsのtodoListをfor分で回して表示する -->
+          <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
+            <div v-if="user.name === todo.user">
+              <!-- todoが完了(done)しているものを表示 -->
+              <div v-if="todo.done">
+                <!-- 編集するときの要素 -->
+                <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" @emit-event="emitEvent" :user="todo.user" />
+                <!-- 基本表示の要素 propsに関しては完了していないものと同じ -->
+                <DisplayTodo
+                  v-else
+                  :title="todo.title"
+                  :details="todo.details"
+                  :date="todo.date"
+                  :time="todo.time"
+                  :done="todo.done"
+                  :doneDate="todo.doneDate"
+                  :doneTime="todo.doneTime"
+                  :id="todo.id"
+                  :user="todo.user"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- todoのリスト -->
-    <div class="board-todo__list">
-      <div class="board-todo__category">ToDOリスト</div>
-      <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
-      <!-- store.jsのtodoListをfor分で回して表示する -->
-      <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
-        <!-- todoが完了(done)していないものを表示 -->
-        <div v-if="!todo.done">
-          <!-- 編集するときの要素 -->
-          <!-- 編集するときは編集前のタイトルを表示するためpropsとしてcomponentsに渡している -->
-          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" @emit-event="emitEvent" />
-          <!-- 基本表示の要素 -->
-          <!-- for分をこのコンポーネントで行っているためDisplayTodo空ではなくこのコンポーネントからpropsで受け渡すようにしている-->
-          <!-- title・・・タスクのタイトル、done・・・タスクが完了しているかどうか、id・・・完了や編集などをする際のタスクの特定の為のID -->
-          <DisplayTodo v-else :title="todo.title" :details="todo.details" :done="todo.done" :time="todo.time" :date="todo.date" :id="todo.id" />
-        </div>
-      </div>
-    </div>
-    <!-- 完了したtodoのリスト -->
-    <div class="board-todo__list board-todo__list--finish">
-      <div class="board-todo__category">完了したToDo</div>
-      <!-- store.jsのtodoListをfor分で回して表示する -->
-      <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
-        <!-- todoが完了(done)しているものを表示 -->
-        <div v-if="todo.done">
-          <!-- 編集するときの要素 -->
-          <EditTodo v-if="todo.editFlag" fn="edit" :title="todo.title" :details="todo.details" :date="todo.date" @emit-event="emitEvent" />
-          <!-- 基本表示の要素 propsに関しては完了していないものと同じ -->
-          <DisplayTodo v-else :title="todo.title" :details="todo.details" :date="todo.date" :time="todo.time" :done="todo.done" :doneDate="todo.doneDate" :doneTime="todo.doneTime" :id="todo.id" />
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -80,6 +145,9 @@ export default {
     lastId() {
       return this.$store.state.lastId;
     },
+    userList() {
+      return this.$store.state.userList;
+    },
   },
   methods: {
     // openEditor(todo) {
@@ -100,7 +168,7 @@ export default {
     emitEvent(...args) {
       // EditTodoから値の受け取り
       // todoの追加・更新・削除
-      const [event, title, details, date, time] = args;
+      const [event, title, details, date, time, user] = args;
       switch (event) {
         case 'add':
           this.todoList.push({
@@ -108,6 +176,7 @@ export default {
             details: details,
             date: date,
             time: time,
+            user: user,
             done: false,
             editFlag: false,
             id: this.lastId,
@@ -122,6 +191,7 @@ export default {
               this.todoList[i].details = details;
               this.todoList[i].date = date;
               this.todoList[i].time = time;
+              this.todoList[i].user = user;
             }
           }
           break;
@@ -133,6 +203,7 @@ export default {
     addNewTodo(fn) {
       if (fn === 'open') {
         this.newTodo = true;
+        this.$store.commit('openEditor');
       } else {
         this.newTodo = false;
       }
@@ -147,6 +218,20 @@ export default {
 .board-todo {
   &__title {
     font-size: 3.2rem;
+  }
+
+  &__user-container {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  &__container {
+    width: 500px;
+    flex-shrink: 0;
+    margin-right: 30px;
+    &:last-of-type {
+      margin-right: 0;
+    }
   }
 
   &__category {
