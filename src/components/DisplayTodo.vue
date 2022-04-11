@@ -2,7 +2,7 @@
   <div class="todo">
     <!-- 編集するときの要素 -->
     <div v-if="todo.editFlag">
-      <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" />
+      <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" :user="todo.user" />
     </div>
     <!-- 基本表示の要素 -->
     <div class="todo__default" v-else>
@@ -19,6 +19,9 @@
       </div>
       <div v-if="todo.done" class="todo__done-time">
         <dir>完了した時間：{{ todo.doneTime }}</dir>
+      </div>
+      <div v-if="todo.user" class="todo__user">
+        <div>担当者：{{ todo.user }}</div>
       </div>
       <div class="todo__buttons">
         <!-- 編集でEditTodoを呼び出し保有しているデータを引き継ぎ編集する状態にする -->
@@ -53,6 +56,7 @@ export default {
         details: this.$props.details,
         date: this.$props.date,
         time: this.$props.time,
+        user: this.$props.user,
         done: this.$props.done,
         doneDate: this.$props.doneDate,
         doneTime: this.$props.doneTime,
@@ -65,6 +69,7 @@ export default {
     details: { type: String, required: false },
     date: { type: Date, required: false },
     time: { type: Date, required: false },
+    user: { type: String, required: false },
     done: { type: Boolean, required: true },
     doneDate: { type: Date, required: false },
     doneTime: { type: Date, required: false },
@@ -101,7 +106,7 @@ export default {
 
   &__details {
     overflow-wrap: break-word;
-    white-space: pre;
+    white-space: pre-line;
   }
 
   &__buttons {

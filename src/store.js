@@ -1,5 +1,13 @@
 import { createStore } from 'vuex';
 
+// userの追加 'mike', 'john', 'jane', 'bob'
+const userList = [
+  { name: 'mike', age: 15 },
+  { name: 'john', age: 20 },
+  { name: 'jane', age: 25 },
+  { name: 'bob', age: 30 },
+];
+
 const localStorageKey = 'todoList';
 // ローカルストレージのデータを取得
 let data = localStorage.getItem(localStorageKey); // ローカルストレージからkeyがtodoListのデータを取得
@@ -18,6 +26,7 @@ export default createStore({
     return {
       todoList: data,
       lastId: initId,
+      userList: userList,
     };
   },
   mutations: {
