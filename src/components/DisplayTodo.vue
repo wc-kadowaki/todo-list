@@ -1,11 +1,7 @@
 <template>
   <div class="todo">
-    <!-- 編集するときの要素 -->
-    <div v-if="todo.editFlag">
-      <EditTodo fn="edit" :title="todo.title" @emit-event="emitEvent" :user="todo.user" />
-    </div>
     <!-- 基本表示の要素 -->
-    <div class="todo__default" v-else>
+    <div class="todo__default">
       <div class="todo__title">{{ todo.title }}</div>
       <div v-if="todo.details" class="todo__details">{{ todo.details }}</div>
       <div v-if="todo.date" class="todo__date">
@@ -39,13 +35,8 @@
 </template>
 
 <script>
-import EditTodo from './function/EditTodo.vue';
-
 export default {
   name: 'DisplayTodo',
-  components: {
-    EditTodo,
-  },
   computed: {
     todo() {
       // title・・・タスクのタイトルの表示
