@@ -32,7 +32,6 @@
       <select v-model="todo.newUser">
         <option value="">選択しない</option>
         <option v-for="(user, key) in userList" :key="key" :selected="selectValue ? true : user.name">{{ user.name }}</option>
-        <option value="abc">テスト</option>
       </select>
     </div>
     <!-- 諸々のボタン -->
@@ -115,7 +114,7 @@ export default {
   methods: {
     sendTodo(fn) {
       // 編集が完了したことを親に伝える＆追加or更新orキャンセル
-      if (this.todo.newTitle === '' && this.todo.newDetails === '' && this.todo.newDate === '' && this.todo.newTime === '' && this.todo.user === '' && fn !== 'cancel') {
+      if (this.todo.newTitle === '' && this.todo.newDetails === '' && this.todo.newDate === '' && this.todo.newTime === '' && this.todo.user === this.todo.newUser && fn !== 'cancel') {
         // タイトル、詳細、日付、時間のどれも入力されずに追加、更新のボタンを押したとき
         alert('入力してください');
       } else if (this.todo.newTitle === '' && fn === 'add') {
