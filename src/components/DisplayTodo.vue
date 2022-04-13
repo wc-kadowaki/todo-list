@@ -94,7 +94,6 @@ export default {
 <style lang="scss" scoped>
 .todo {
   padding: 10px 20px;
-  width: 500px;
   border: 1px solid #000000;
 
   &__title {

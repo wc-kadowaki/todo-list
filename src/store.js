@@ -1,12 +1,21 @@
 import { createStore } from 'vuex';
 
 // userの追加 'mike', 'john', 'jane', 'bob'
-const userList = [
-  { name: 'mike', age: 15 },
-  { name: 'john', age: 20 },
-  { name: 'jane', age: 25 },
-  { name: 'bob', age: 30 },
-];
+// const userList = [
+//   { name: 'mike', id: 0 },
+//   { name: 'john', id: 1 },
+//   { name: 'jane', id: 2 },
+//   { name: 'bob', id: 3 },
+// ];
+
+let userInitId = 4;
+const localStorageKeyUser = 'userList';
+let userData = localStorage.getItem(localStorageKeyUser);
+if (userData) {
+  userData = JSON.parse(userData);
+} else {
+  userData = [];
+}
 
 const localStorageKey = 'todoList';
 // ローカルストレージのデータを取得
@@ -26,7 +35,8 @@ export default createStore({
     return {
       todoList: data,
       lastId: initId,
-      userList: userList,
+      userList: userData,
+      userLastId: userInitId,
     };
   },
   mutations: {
@@ -83,6 +93,21 @@ export default createStore({
         }
       }
     },
+    addUser(state, newUserName) {
+      let newUser = {
+        name: newUserName,
+        id: state.userLastId,
+      };
+      state.userList.push(newUser);
+      state.userLastId = state.userList[state.userList.length - 1].id + 1;
+    },
+    removeUser(state, id) {
+      for (let i = 0; i < state.userList.length; i++) {
+        if (state.userList[i].id === id) {
+          state.userList.splice(i, 1);
+        }
+      }
+    },
     updateLastId(state) {
       // 最後に追加したtodoのidに+1することでかぶらない数値のidを作成
       state.lastId = state.todoList[state.todoList.length - 1].id + 1;
@@ -92,6 +117,11 @@ export default createStore({
       localStorage.removeItem(localStorageKey); // 既存のデータを削除
       let json = JSON.stringify(state.todoList, undefined, 1); // 現在のtodoリスト(オブジェクトの配列)をローカルストレージのvalueに入れる為文字列型に変換
       localStorage.setItem(localStorageKey, json); //
+    },
+    pushLocalStorageUser(state) {
+      localStorage.removeItem(localStorageKeyUser); // 既存のデータを削除
+      let json = JSON.stringify(state.userList, undefined, 1); // 現在のtodoリスト(オブジェクトの配列)をローカルストレージのvalueに入れる為文字列型に変換
+      localStorage.setItem(localStorageKeyUser, json); //
     },
   },
 });

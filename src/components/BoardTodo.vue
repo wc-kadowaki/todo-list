@@ -1,6 +1,10 @@
 <template>
   <div class="board-todo">
     <h2 class="board-todo__title">TODOダッシュボード</h2>
+    <div class="board-todo__add-user">
+      <div class="board-todo__add-user-title">ユーザーの管理</div>
+      <EditUser />
+    </div>
     <!-- todoの追加 -->
     <div class="board-todo__add add-todo">
       <h3 class="board-todo__subtitle">ToDoの追加</h3>
@@ -113,12 +117,14 @@
 </template>
 
 <script>
+import EditUser from './function/EditUser.vue';
 import EditTodo from './function/EditTodo.vue';
 import DisplayTodo from './DisplayTodo.vue';
 
 export default {
   name: 'BoardTodo',
   components: {
+    EditUser,
     EditTodo,
     DisplayTodo,
   },
@@ -217,7 +223,11 @@ export default {
 <style lang="scss" scoped>
 .board-todo {
   &__title {
-    font-size: 3.2rem;
+    font-size: 32px;
+  }
+
+  &__subtitle {
+    font-size: 26px;
   }
 
   &__user-container {
@@ -226,7 +236,7 @@ export default {
   }
 
   &__container {
-    width: 500px;
+    width: 380px;
     flex-shrink: 0;
     margin-right: 30px;
     &:last-of-type {
@@ -235,8 +245,10 @@ export default {
   }
 
   &__category {
-    font-size: 2.4rem;
+    font-size: 24px;
     font-weight: bold;
+    margin-top: 20px;
+    text-align: center;
   }
 
   &__todo {
