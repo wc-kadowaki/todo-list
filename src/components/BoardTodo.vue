@@ -2,13 +2,15 @@
   <div class="board-todo">
     <h2 class="board-todo__title">TODOダッシュボード</h2>
     <div class="board-todo__add-user">
-      <div class="board-todo__add-user-title">ユーザーの管理</div>
+      <h3 class="board-todo__subtitle">ユーザーの管理</h3>
       <EditUser />
     </div>
     <!-- todoの追加 -->
     <div class="board-todo__add add-todo">
       <h3 class="board-todo__subtitle">ToDoの追加</h3>
-      <button @click="addNewTodo('open')" v-if="!newTodo">ToDoを追加する</button>
+      <div class="add-todo__button">
+        <button @click="addNewTodo('open')" v-if="!newTodo">ToDoを追加する</button>
+      </div>
       <!-- タスクの内容 タイトル、期日、詳細・・・最初はタイトルのみでのちに追加 -->
       <div v-if="newTodo" class="add-todo__editor">
         <!-- 新規タスク追加のエディターstore.jsの一番新しいidを与えてそれを新規追加した際のidにする？？？ -->
@@ -18,7 +20,7 @@
     </div>
     <div class="board-todo__user-container">
       <div class="board-todo__container">
-        <div>すべてのToDo</div>
+        <div class="board-todo__user">すべてのToDo</div>
         <div class="board-todo__list">
           <div class="board-todo__category">未完了のToDo</div>
           <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
@@ -63,7 +65,7 @@
         </div>
       </div>
       <div class="board-todo__container" v-for="(user, userKey) in userList" :key="userKey">
-        <div>{{ user.name }}のToDoリスト</div>
+        <div class="board-todo__user">{{ user.name }}のToDo</div>
         <div class="board-todo__list">
           <div class="board-todo__category">未完了のToDo</div>
           <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
@@ -222,17 +224,22 @@ export default {
 
 <style lang="scss" scoped>
 .board-todo {
+  padding: 30px;
   &__title {
     font-size: 32px;
   }
 
   &__subtitle {
     font-size: 26px;
+    margin-top: 10px;
   }
 
   &__user-container {
     display: flex;
     flex-wrap: nowrap;
+    margin-top: 30px;
+    overflow-x: scroll;
+    padding-bottom: 30px;
   }
 
   &__container {
@@ -244,10 +251,24 @@ export default {
     }
   }
 
+  &__user {
+    text-align: center;
+    color: #ffffff;
+    background-color: #000000;
+    font-size: 24px;
+    padding: 10px 0;
+  }
+
+  &__list {
+    padding: 20px 10px;
+    &--finish {
+      background-color: #f2f2f2;
+    }
+  }
+
   &__category {
     font-size: 24px;
     font-weight: bold;
-    margin-top: 20px;
     text-align: center;
   }
 
@@ -256,6 +277,15 @@ export default {
     &:first-of-type {
       margin-top: 0;
     }
+  }
+}
+
+.add-todo {
+  &__button {
+    margin-top: 10px;
+  }
+  &__editor {
+    width: 380px;
   }
 }
 </style>
