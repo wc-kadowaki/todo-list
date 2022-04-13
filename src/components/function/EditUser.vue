@@ -1,13 +1,11 @@
 <template>
   <div class="edit-user">
-    <div class="edit-user__list">
-      <div>ユーザー一覧</div>
+    <div class="edit-user__container">
+      <div class="edit-user__title">ユーザー一覧</div>
       <ul class="edit-user__list">
-        <li v-for="(user, key) in userList" :key="key">
-          <div>{{ user.name }}<button type="button" @click="removeUser(user.id)">削除</button></div>
-        </li>
+        <li class="edit-user__item" v-for="(user, key) in userList" :key="key">{{ user.name }}<button type="button" @click="removeUser(user.id)">削除</button></li>
       </ul>
-      <div>
+      <div class="edit-user__add">
         ユーザーの追加
         <input type="text" v-model="newUser.name" />
         <button type="button" @click="addUser">追加</button>
@@ -48,3 +46,25 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.edit-user {
+  margin-top: 10px;
+  &__title {
+    font-size: 18px;
+  }
+  &__list {
+    margin-top: 5px;
+  }
+  &__item {
+    margin-top: 5px;
+    display: flex;
+    width: 150px;
+    justify-content: space-between;
+  }
+  &__add {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+}
+</style>

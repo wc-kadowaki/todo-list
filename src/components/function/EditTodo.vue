@@ -167,7 +167,7 @@ export default {
 .editor {
   position: relative;
   padding: 10px 20px;
-  width: 500px;
+  width: 100%;
   border: 1px solid #000000;
 
   &__item {
@@ -178,6 +178,7 @@ export default {
     font-size: 18px;
     font-weight: bold;
     border-bottom: 1px solid #000000;
+    word-break: break-all;
   }
 
   &__details {
