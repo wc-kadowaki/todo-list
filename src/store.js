@@ -8,15 +8,18 @@ import { createStore } from 'vuex';
 //   { name: 'bob', id: 3 },
 // ];
 
-let userInitId = 4;
+// ユーザーデータ用下のtodoリスト用のものと処理は特に変わらないです。
 const localStorageKeyUser = 'userList';
 let userData = localStorage.getItem(localStorageKeyUser);
+let userInitId = 0;
 if (userData) {
   userData = JSON.parse(userData);
+  userInitId = userData[userData.length - 1].id + 1;
 } else {
   userData = [];
 }
 
+// todoリスト用のローカルストレージのデータのやり取り
 const localStorageKey = 'todoList';
 // ローカルストレージのデータを取得
 let data = localStorage.getItem(localStorageKey); // ローカルストレージからkeyがtodoListのデータを取得
