@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 
+// localStorage使用しない時の初期データ
 // userの追加 'mike', 'john', 'jane', 'bob'
 // const userList = [
 //   { name: 'mike', id: 0 },
@@ -7,17 +8,6 @@ import { createStore } from 'vuex';
 //   { name: 'jane', id: 2 },
 //   { name: 'bob', id: 3 },
 // ];
-
-// ユーザーデータ用下のtodoリスト用のものと処理は特に変わらないです。
-const localStorageKeyUser = 'userList';
-let userData = localStorage.getItem(localStorageKeyUser);
-let userInitId = 0;
-if (userData) {
-  userData = JSON.parse(userData);
-  userInitId = userData[userData.length - 1].id + 1;
-} else {
-  userData = [];
-}
 
 // todoリスト用のローカルストレージのデータのやり取り
 const localStorageKey = 'todoList';
@@ -33,25 +23,35 @@ if (data) {
   data = []; // オブジェクトを配列にしてtodoリストを管理しているため空の配列を代入
 }
 
+// ユーザーデータ用。todoリスト用のものと処理は特に変わらないです。処理がほぼ同じなので関数化したらまとめられそう
+const localStorageKeyUser = 'userList';
+let userData = localStorage.getItem(localStorageKeyUser);
+let userInitId = 0;
+if (userData) {
+  userData = JSON.parse(userData);
+  userInitId = userData[userData.length - 1].id + 1;
+} else {
+  userData = [];
+}
+
 export default createStore({
   state() {
     return {
-      todoList: data,
-      lastId: initId,
-      userList: userData,
-      userLastId: userInitId,
+      todoList: data, //todoリストのデータ
+      lastId: initId, // todoリストの最後に追加したtodoのidに+1しユニークな数値のid
+      userList: userData, // ユーザーリストのデータ
+      userLastId: userInitId, // todoリストの方と同じでそれのユーザーデータ版
     };
   },
-  mutations: {
-    doneChange(state, id) {
-      // todoの完了、未完了の切り替え
+  mutations: { // idが引数になっているものは変更対象の特定にidを使用している
+    doneChange(state, id) { // todoの完了、未完了の切り替えの関数
       // 日時の入力で一桁の時先頭に「0」を付ける関数
       function dateFormat(number) {
-        let target = String(number);
-        if (target.length === 1) {
-          return `0${target}`;
+        let target = String(number); // 受け取った数値を文字列に変換
+        if (target.length === 1) { // 変換した文字列の文字数が1文字の場合
+          return `0${target}`; // 先頭に0をつけて返す
         } else {
-          return target;
+          return target; // 2文字の場合はそのまま返す(特に処理を挟まないので文字列のまま)
         }
       }
       const today = new Date(); // 完了を押したときのDateオブジェクト
@@ -78,33 +78,33 @@ export default createStore({
         }
       }
     },
-    openEditor(state, id) {
-      state.todoList.forEach((element) => {
+    openEditor(state, id) { // 編集を押した際にtodoを編集できるようにする
+      state.todoList.forEach((element) => { // 編集を押したもの以外のtodoを編集できない状態にする
         element.editFlag = false;
       });
-      // 編集するtodoのエディターを表示
+      // 編集するtodoの編集用のフラグを立てる
       for (let i = 0; i < state.todoList.length; i++) {
         if (state.todoList[i].id === id) {
           state.todoList[i].editFlag = true;
         }
       }
     },
-    removeTodo(state, id) {
+    removeTodo(state, id) { // 削除を押した際に対象のtodoを削除する
       for (let i = 0; i < state.todoList.length; i++) {
         if (state.todoList[i].id === id) {
-          state.todoList.splice(i, 1);
+          state.todoList.splice(i, 1); // todoリストの配列から対象のものを削除
         }
       }
     },
-    addUser(state, newUserName) {
+    addUser(state, newUserName) { // ユーザーの追加。一旦ユーザーのデータは名前のみにしているのでこの関数で大丈夫だが他の情報を入れる場合変更する必要がある
       let newUser = {
         name: newUserName,
         id: state.userLastId,
       };
-      state.userList.push(newUser);
-      state.userLastId = state.userList[state.userList.length - 1].id + 1;
+      state.userList.push(newUser); // ユーザーリストの配列の最後にユーザーを追加
+      state.userLastId = state.userList[state.userList.length - 1].id + 1; // ユーザーが増えたので次回移行追加された時のためidを更新
     },
-    removeUser(state, id) {
+    removeUser(state, id) { // ユーザーの削除。処理内容はtodoの削除の時と同じ
       for (let i = 0; i < state.userList.length; i++) {
         if (state.userList[i].id === id) {
           state.userList.splice(i, 1);
@@ -115,6 +115,7 @@ export default createStore({
       // 最後に追加したtodoのidに+1することでかぶらない数値のidを作成
       state.lastId = state.todoList[state.todoList.length - 1].id + 1;
     },
+    // keyとvalueを引数に入れれば関数を一つにできそう
     pushLocalStorage(state) {
       // ローカルストレージのデータを更新する関数
       localStorage.removeItem(localStorageKey); // 既存のデータを削除

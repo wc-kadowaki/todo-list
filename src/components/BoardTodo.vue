@@ -23,8 +23,7 @@
         <div class="board-todo__user">すべてのToDo</div>
         <div class="board-todo__list">
           <div class="board-todo__category">未完了のToDo</div>
-          <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
-          <!-- store.jsのtodoListをfor分で回して表示する -->
+          <!-- store.jsのtodoListをforで回して表示する -->
           <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
             <!-- todoが完了(done)していないものを表示 -->
             <div v-if="!todo.done">
@@ -64,11 +63,11 @@
           </div>
         </div>
       </div>
+      <!-- ユーザーごとのtodoの表示 -->
       <div class="board-todo__container" v-for="(user, userKey) in userList" :key="userKey">
         <div class="board-todo__user">{{ user.name }}のToDo</div>
         <div class="board-todo__list">
           <div class="board-todo__category">未完了のToDo</div>
-          <!-- todo自体もコンポーネントにした方が管理しやすい？ -->
           <!-- store.jsのtodoListをfor分で回して表示する -->
           <div class="board-todo__todo" v-for="(todo, key) in todoList" :key="key">
             <div v-if="user.name === todo.user">
@@ -134,15 +133,6 @@ export default {
     return {
       // 完了したtodoはありませんなど入れる場合はtodoListを分ける必要あり？
       // todoListの変化に合わせて特定のmethodsを発火させdataに判定用の変数のlengthを格納？
-      // let todoArray = [];
-      // let finishTodoArray = [];
-      // for(let i = 0; i < todoList.length; i++) {
-      //   if(todoList[i].done) {
-      //     finishTodoArray.push(todoList[i]);
-      //   } else {
-      //     todoArray.push(todoList[i]);
-      //   }
-      // }
       newTodo: false,
     };
   },
@@ -158,27 +148,12 @@ export default {
     },
   },
   methods: {
-    // openEditor(todo) {
-    //   console.log("open editor");
-    //   // 編集するtodoの特定
-    //   let index = this.todoList.indexOf(todo);
-    //   // 編集するtodo以外の編集を一括キャンセル
-    //   this.todoList.forEach((element) => {
-    //     element.editFlag = false;
-    //   });
-    //   // 編集するtodoのエディターを表示
-    //   this.todoList[index].editFlag = true;
-    // },
-    // removeTodo(todo) {
-    //   let index = this.todoList.indexOf(todo);
-    //   this.todoList.splice(index, 1);
-    // },
     emitEvent(...args) {
       // EditTodoから値の受け取り
       // todoの追加・更新・削除
       const [event, title, details, date, time, user] = args;
       switch (event) {
-        case 'add':
+        case 'add': //追加の時
           this.todoList.push({
             title: title,
             details: details,
@@ -189,12 +164,13 @@ export default {
             editFlag: false,
             id: this.lastId,
           });
-          // 編集が完了した際にstore.jsのstateのIDを更新したい、、、
+          // 編集が完了した際にstore.jsのstateのidを更新
           this.$store.commit('updateLastId');
           break;
-        case 'update':
+        case 'update': // 更新の時
           for (let i = 0; i < this.todoList.length; i++) {
             if (this.todoList[i].editFlag) {
+              // 編集のフラグの立っているものを更新
               this.todoList[i].title = title;
               this.todoList[i].details = details;
               this.todoList[i].date = date;
@@ -204,11 +180,13 @@ export default {
           }
           break;
       }
+      // 追加や更新が完了したので編集のフラグを全て消す
       this.todoList.forEach((element) => {
         element.editFlag = false;
       });
     },
     addNewTodo(fn) {
+      // todoを追加するボタンを押したときにエディターを表示する
       if (fn === 'open') {
         this.newTodo = true;
         this.$store.commit('openEditor');
@@ -216,7 +194,6 @@ export default {
         this.newTodo = false;
       }
     },
-
     // ローカルストレージへのデータの登録と呼び出し
   },
 };
