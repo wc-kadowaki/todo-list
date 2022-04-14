@@ -31,7 +31,8 @@
       <div class="editor__user">担当者</div>
       <select v-model="todo.newUser">
         <option value="">選択しない</option>
-        <option v-for="(user, key) in userList" :key="key" :selected="selectValue ? true : user.name">{{ user.name }}</option>
+        <!-- :selected -->
+        <option v-for="(user, key) in userList" :key="key">{{ user.name }}</option>
       </select>
     </div>
     <!-- 諸々のボタン -->
@@ -62,6 +63,7 @@ export default {
       // title・・・タスクの編集時に元のタイトルを表示する際の為
       // newTitle・・・新しく入力したタイトルを現状のタイトルと区別するため
       // editor・・・追加、編集の判定をするため
+      // userとnewsUserを分けているのが
       todo: {
         title: this.$props.title,
         newTitle: '',
@@ -85,31 +87,12 @@ export default {
   // title・・・ 元のタイトルを利用するため
   // fn・・・追加、編集の判定をするため
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    details: {
-      type: String,
-      required: false,
-    },
-    date: {
-      type: Date,
-      required: false,
-    },
-    time: {
-      type: Date,
-      required: false,
-    },
-    user: {
-      type: String,
-      required: false,
-    },
-    fn: {
-      type: String,
-      required: true,
-      default: 'add',
-    },
+    title: { type: String, required: true },
+    details: { type: String, required: false },
+    date: { type: Date, required: false },
+    time: { type: Date, required: false },
+    user: { type: String, required: false },
+    fn: { type: String, required: true, default: 'add' },
   },
   methods: {
     sendTodo(fn) {
@@ -157,7 +140,7 @@ export default {
         this.todo.newTime = '';
         this.todo.newUser = '';
       }
-      this.$store.commit('pushLocalStorage');
+      this.$store.commit('pushLocalStorage'); // localStorageの情報を更新
     },
   },
 };

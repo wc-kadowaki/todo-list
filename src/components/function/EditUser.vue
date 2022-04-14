@@ -30,7 +30,7 @@ export default {
     },
   },
   methods: {
-    addUser() {
+    addUser() { // 追加ボタンを押したときの処理
       if (this.newUser.name === '') {
         alert('入力してください');
       } else {
